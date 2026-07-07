@@ -36,7 +36,7 @@ You will need Python installed, along with Docker to run your database and messa
 ### 1. Clone the Repository & Set Up Virtual Environment
 
 ```bash
-git clone https://github.com/yourusername/bulkflow.git
+git clone https://github.com/pankajhamal/celery_bulk_ingestion.git
 cd bulkflow
 
 # Create and activate virtual environment
