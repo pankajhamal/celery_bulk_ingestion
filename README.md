@@ -54,4 +54,7 @@ pip install requirements.txt
 
 # Start uvicorn server
 uvicorn app.main:app --reload
+
+# Start celery worker
+celery -A app.worker.celery_app worker
 ````
