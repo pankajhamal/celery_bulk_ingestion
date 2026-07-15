@@ -1,6 +1,14 @@
 # Celery_Bulk_Ingestion
 
-Celery_bulk_ingestion is an asynchronous, high-performance CSV ingestion engine built with **FastAPI**, **Celery**, and **PostgreSQL**. 
+<div align="center">
+    <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python" />
+  <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Celery-378140?style=for-the-badge&logo=celery&logoColor=white" alt="Celery" />
+  <img src="https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white" alt="Redis" />
+  <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+</div>
+
+Celery_bulk_ingestion is an asynchronous, high-performance CSV ingestion engine built with **FastAPI**, **Celery**, and **PostgreSQL**.
 
 Instead of inserting rows one by one, which can slow down your application and lock up the database, BulkFlow splits large CSV files into smaller "chunks" (e.g., 5,000 rows each) and processes them in parallel across multiple background workers using database bulk-insert operations.
 
@@ -12,19 +20,6 @@ Instead of inserting rows one by one, which can slow down your application and l
 2. **FastAPI** reads the file, slices the rows into distinct chunks of a predefined size, and generates background jobs.
 3. **Redis** acts as the message broker, storing and queuing the chunk insert jobs.
 4. **Celery Workers** pull the chunks from the queue and perform efficient bulk SQL operations directly into **PostgreSQL**.
-
-## Architecture Flow
-```mermaid
-flowchart TD
-    A[Client / Browser] -->|1. Upload CSV File| B(FastAPI Application)
-    B -->|2. Slice Rows into Chunks| B
-    B -->|3. Dispatch Tasks| C[Redis Message Broker]
-    B -.->|4. Return 202 Accepted + Task IDs| A
-
-    subgraph Background Workers
-        C -->|5. Fetch Tasks| D[Celery Worker Cluster]
-        D -->|6. Execute Bulk Insert with ON CONFLICT DO NOTHING| E[(PostgreSQL Database)]
-    end
 
 ---
 
@@ -59,3 +54,4 @@ pip install requirements.txt
 
 # Start uvicorn server
 uvicorn app.main:app --reload
+````
