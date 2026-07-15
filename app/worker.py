@@ -2,8 +2,9 @@ from celery import Celery
 from celery.signals import worker_process_init
 from app.config import settings
 from app.connection import engine, SessionLocal
-from app.models import User 
+from app.models import Currency 
 from sqlalchemy import insert
+
 
 celery_app = Celery(
   "tasks",
@@ -34,7 +35,7 @@ def insert_chunk_to_db(chunk_data: list):
 
   try: 
     db.execute(
-       insert(User),
+       insert(Currency),
        chunk_data
     )
 
