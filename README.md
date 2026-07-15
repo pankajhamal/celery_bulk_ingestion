@@ -1,8 +1,6 @@
-# celer_bulk_ingestion
+# Celery_Bulk_Ingestion
 
-# BulkFlow
-
-BulkFlow is an asynchronous, high-performance CSV ingestion engine built with **FastAPI**, **Celery**, and **PostgreSQL**. 
+Celery_bulk_ingestion is an asynchronous, high-performance CSV ingestion engine built with **FastAPI**, **Celery**, and **PostgreSQL**. 
 
 Instead of inserting rows one by one, which can slow down your application and lock up the database, BulkFlow splits large CSV files into smaller "chunks" (e.g., 5,000 rows each) and processes them in parallel across multiple background workers using database bulk-insert operations.
 
@@ -10,10 +8,23 @@ Instead of inserting rows one by one, which can slow down your application and l
 
 ## Architecture Overview
 
-1. **Client** uploads a CSV file containing user names and emails.
+1. **Client** uploads a CSV file containing Code, symbol and name.
 2. **FastAPI** reads the file, slices the rows into distinct chunks of a predefined size, and generates background jobs.
 3. **Redis** acts as the message broker, storing and queuing the chunk insert jobs.
 4. **Celery Workers** pull the chunks from the queue and perform efficient bulk SQL operations directly into **PostgreSQL**.
+
+## Architecture Flow
+```mermaid
+flowchart TD
+    A[Client / Browser] -->|1. Upload CSV File| B(FastAPI Application)
+    B -->|2. Slice Rows into Chunks| B
+    B -->|3. Dispatch Tasks| C[Redis Message Broker]
+    B -.->|4. Return 202 Accepted + Task IDs| A
+
+    subgraph Background Workers
+        C -->|5. Fetch Tasks| D[Celery Worker Cluster]
+        D -->|6. Execute Bulk Insert with ON CONFLICT DO NOTHING| E[(PostgreSQL Database)]
+    end
 
 ---
 
@@ -31,14 +42,20 @@ Instead of inserting rows one by one, which can slow down your application and l
 
 ### Prerequisites
 
-You will need Python installed, along with Docker to run your database and message broker easily.
+You will need Python installed
 
 ### 1. Clone the Repository & Set Up Virtual Environment
 
 ```bash
 git clone https://github.com/pankajhamal/celery_bulk_ingestion.git
-cd bulkflow
+cd celery_bulk_ingestion
 
 # Create and activate virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows use: venv\Scripts\activate
+
+# Install requirements.txt
+pip install requirements.txt
+
+# Start uvicorn server
+uvicorn app.main:app --reload
